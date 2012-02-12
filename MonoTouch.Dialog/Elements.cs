@@ -1629,6 +1629,8 @@ namespace MonoTouch.Dialog
 	public class DateTimeElement : StringElement {
 		public DateTime DateValue;
 		public UIDatePicker datePicker;
+		public event Action<DateTimeElement> DateSelected;
+		
 		protected internal NSDateFormatter fmt = new NSDateFormatter () {
 			DateStyle = NSDateFormatterStyle.Short
 		};
@@ -1711,6 +1713,8 @@ namespace MonoTouch.Dialog
 			{
 				base.ViewWillDisappear (animated);
 				container.DateValue = container.datePicker.Date;
+				if (container.DateSelected != null)
+					container.DateSelected (container);
 			}
 			
 			public override void DidRotate (UIInterfaceOrientation fromInterfaceOrientation)
