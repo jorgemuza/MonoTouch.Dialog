@@ -1377,6 +1377,7 @@ namespace MonoTouch.Dialog
 
 		public event EventHandler Changed;
 		public event Func<bool> ShouldReturn;
+		public EventHandler EntryStarted {get;set;}
 		/// <summary>
 		/// Constructs an EntryElement with the given caption, placeholder and initial value.
 		/// </summary>
@@ -1539,6 +1540,10 @@ namespace MonoTouch.Dialog
 						entry.ReturnKeyType = returnKeyType.Value;
 
 					tv.ScrollToRow (IndexPath, UITableViewScrollPosition.Middle, true);
+					
+					if (EntryStarted != null) {
+						EntryStarted(this, null);
+					}
 				};
 			}
 			if (becomeResponder){
