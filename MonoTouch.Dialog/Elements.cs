@@ -1365,11 +1365,23 @@ namespace MonoTouch.Dialog
 					this.autocorrectionType = value;
 			}
 		}
+		
+		public UITextFieldViewMode ClearButtonMode { 
+			get { 
+				return clearButtonMode;
+			}
+			set { 
+				clearButtonMode = value;
+				if (entry != null)
+					entry.ClearButtonMode = value;
+			}
+		}
 
 		UIKeyboardType keyboardType = UIKeyboardType.Default;
 		UIReturnKeyType? returnKeyType = null;
 		UITextAutocapitalizationType autocapitalizationType = UITextAutocapitalizationType.Sentences;
 		UITextAutocorrectionType autocorrectionType = UITextAutocorrectionType.Default;
+		UITextFieldViewMode clearButtonMode = UITextFieldViewMode.Never;
 		bool isPassword, becomeResponder;
 		UITextField entry;
 		string placeholder;
@@ -1378,6 +1390,7 @@ namespace MonoTouch.Dialog
 		public event EventHandler Changed;
 		public event Func<bool> ShouldReturn;
 		public EventHandler EntryStarted {get;set;}
+		public EventHandler EntryEnded {get;set;}
 		/// <summary>
 		/// Constructs an EntryElement with the given caption, placeholder and initial value.
 		/// </summary>
@@ -1457,7 +1470,8 @@ namespace MonoTouch.Dialog
 				Placeholder = placeholder ?? "",
 				SecureTextEntry = isPassword,
 				Text = Value ?? "",
-				Tag = 1
+				Tag = 1,
+				ClearButtonMode = ClearButtonMode
 			};
 		}
 		
@@ -1491,8 +1505,11 @@ namespace MonoTouch.Dialog
 				entry.EditingChanged += delegate {
 					FetchValue ();
 				};
-				entry.Ended += delegate {
+				entry.Ended += delegate {					
 					FetchValue ();
+					if (EntryEnded != null) {
+						EntryEnded(this, null);
+					}
 				};
 				entry.ShouldReturn += delegate {
 					
@@ -1529,6 +1546,10 @@ namespace MonoTouch.Dialog
 				entry.Started += delegate {
 					EntryElement self = null;
 					
+					if (EntryStarted != null) {
+						EntryStarted(this, null);
+					}
+					
 					if (!returnKeyType.HasValue) {
 						var returnType = UIReturnKeyType.Default;
 						
@@ -1541,12 +1562,8 @@ namespace MonoTouch.Dialog
 						entry.ReturnKeyType = returnType;
 					} else
 						entry.ReturnKeyType = returnKeyType.Value;
-
-					tv.ScrollToRow (IndexPath, UITableViewScrollPosition.Middle, true);
 					
-					if (EntryStarted != null) {
-						EntryStarted(this, null);
-					}
+					tv.ScrollToRow (IndexPath, UITableViewScrollPosition.Middle, true);
 				};
 			}
 			if (becomeResponder){
@@ -1609,7 +1626,7 @@ namespace MonoTouch.Dialog
 		/// <param name="animated">
 		/// Whether scrolling to the location of this cell should be animated
 		/// </param>
-		public void BecomeFirstResponder (bool animated)
+		public virtual void BecomeFirstResponder (bool animated)
 		{
 			becomeResponder = true;
 			var tv = GetContainerTableView ();
@@ -1622,7 +1639,7 @@ namespace MonoTouch.Dialog
 			}
 		}
 
-		public void ResignFirstResponder (bool animated)
+		public virtual void ResignFirstResponder (bool animated)
 		{
 			becomeResponder = false;
 			var tv = GetContainerTableView ();
