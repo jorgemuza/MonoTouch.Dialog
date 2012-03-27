@@ -1689,8 +1689,17 @@ namespace MonoTouch.Dialog
 			}
 		}
 		
+		protected DateTime GetDateWithKind (DateTime dt)
+		{
+			if (dt.Kind == DateTimeKind.Unspecified)
+				return DateTime.SpecifyKind (dt, DateTimeKind.Local);
+
+			return dt;
+		}
+		
 		public virtual string FormatDate (DateTime dt)
 		{
+			dt = GetDateWithKind (dt);
 			return fmt.ToString (dt) + " " + dt.ToLocalTime ().ToShortTimeString ();
 		}
 		
@@ -1778,7 +1787,7 @@ namespace MonoTouch.Dialog
 		
 		public override string FormatDate (DateTime dt)
 		{
-			return fmt.ToString (dt);
+			return fmt.ToString (GetDateWithKind (dt));
 		}
 		
 		public override UIDatePicker CreatePicker ()
@@ -1796,7 +1805,7 @@ namespace MonoTouch.Dialog
 		
 		public override string FormatDate (DateTime dt)
 		{
-			return dt.ToLocalTime ().ToShortTimeString ();
+			return GetDateWithKind (dt).ToLocalTime ().ToShortTimeString ();
 		}
 		
 		public override UIDatePicker CreatePicker ()
