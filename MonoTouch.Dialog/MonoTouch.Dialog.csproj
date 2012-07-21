@@ -100,6 +100,12 @@
     <Compile Include="Utilities\GlassButton.cs" />
     <Compile Include="Utilities\LocalizationExtensions.cs" />
     <Compile Include="Elements\Json.cs" />
+    <Compile Include="Elements\ButtonElement.cs" />
+    <Compile Include="Elements\GlassButtonElement.cs" />
+    <Compile Include="Elements\MultiLineEditElement.cs" />
+    <Compile Include="Elements\MultiLineTableCell.cs" />
+    <Compile Include="Elements\SegmentElement.cs" />
+    <Compile Include="Utilities\SegmentControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Images\" />
