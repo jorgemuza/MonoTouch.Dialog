@@ -907,6 +907,10 @@ namespace MonoTouch.Dialog
 		{ 
 			this.style = style;
 		}
+		public StyledMultilineElement (string caption, string value, UITableViewCellStyle style, NSAction tapped) : base (caption, value) 
+		{ 
+			Tapped += tapped;
+		}
 
 		public virtual float GetHeight (UITableView tableView, NSIndexPath indexPath)
 		{
